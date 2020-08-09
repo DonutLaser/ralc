@@ -34,11 +34,11 @@ fn expr(tokens: &mut Tokens) -> i32 {
         match token {
             Token::PLUS => {
                 tokens.eat();
-                value = value + modulo(tokens);
+                value += modulo(tokens);
             }
             Token::MINUS => {
                 tokens.eat();
-                value = value - modulo(tokens);
+                value -= modulo(tokens);
             }
             _ => panic!("Expected + or -, got {:?}", token),
         }
@@ -57,7 +57,7 @@ fn modulo(tokens: &mut Tokens) -> i32 {
         match token {
             Token::MOD => {
                 tokens.eat();
-                value = value % term(tokens);
+                value %= term(tokens);
             }
             _ => panic!("Expected %, got {:?}", token),
         }
@@ -76,11 +76,11 @@ fn term(tokens: &mut Tokens) -> i32 {
         match token {
             Token::MUL => {
                 tokens.eat();
-                value = value * power(tokens);
+                value *= power(tokens);
             }
             Token::DIV => {
                 tokens.eat();
-                value = value / power(tokens);
+                value /= power(tokens);
             }
             _ => panic!("Expected * or /, got {:?}", token),
         }
@@ -162,7 +162,7 @@ fn factor(tokens: &mut Tokens) -> i32 {
             }
             let value = factor(tokens);
 
-            (2..=value).into_iter().fold(1, |acc, x| acc * x)
+            (2..=value).product()
         }
         _ => panic!("Did not expect {:?}", token),
     }
