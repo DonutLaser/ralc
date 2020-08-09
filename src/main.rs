@@ -14,12 +14,21 @@ fn main() {
     if args.len() > 1 {
         println!("{}", eval(&args[1]));
     } else {
-        let mut expr = String::new();
-        print!(">> ");
-        io::stdout().flush().unwrap();
-        io::stdin().read_line(&mut expr).unwrap();
+        let mut running = true;
 
-        println!("{}", eval(&expr));
+        while running {
+            let mut expr = String::new();
+            print!(">> ");
+            io::stdout().flush().unwrap();
+            io::stdin().read_line(&mut expr).unwrap();
+
+            if expr.trim() == "quit" {
+                running = false;
+                continue;
+            }
+
+            println!("{}", eval(&expr));
+        }
     }
 }
 
