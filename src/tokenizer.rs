@@ -1,7 +1,7 @@
 #![allow(unused)]
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum Token {
-    NUM(i32),
+    NUM(f64),
     PLUS,   // +
     MINUS,  // -
     MUL,    // *
@@ -21,11 +21,11 @@ pub fn tokenize(expr: &str) -> Vec<Token> {
     let mut iter = expr.chars().filter(|c| !c.is_whitespace());
 
     let mut next = iter.next();
-    while !next.is_none() {
+    while next.is_some() {
         let mut c = next.unwrap();
         if c.is_digit(10) {
             let mut n: String = String::new();
-            while c.is_digit(10) {
+            while c.is_digit(10) || c == '.' {
                 n.push(c);
                 next = iter.next();
 
@@ -36,7 +36,7 @@ pub fn tokenize(expr: &str) -> Vec<Token> {
                 c = next.unwrap();
             }
 
-            result.push(Token::NUM(n.parse::<i32>().unwrap()));
+            result.push(Token::NUM(n.parse::<f64>().unwrap()));
             continue;
         } else if c.is_alphabetic() {
             let mut n: String = String::new();

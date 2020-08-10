@@ -26,7 +26,11 @@ impl Tokens {
     }
 }
 
-fn expr(tokens: &mut Tokens) -> i32 {
+fn is_float(value: f64) -> bool {
+    value.to_string().contains('.')
+}
+
+fn expr(tokens: &mut Tokens) -> f64 {
     let mut value = modulo(tokens);
 
     let mut token = tokens.peek();
@@ -49,7 +53,7 @@ fn expr(tokens: &mut Tokens) -> i32 {
     value
 }
 
-fn modulo(tokens: &mut Tokens) -> i32 {
+fn modulo(tokens: &mut Tokens) -> f64 {
     let mut value = term(tokens);
 
     let mut token = tokens.peek();
@@ -68,7 +72,7 @@ fn modulo(tokens: &mut Tokens) -> i32 {
     value
 }
 
-fn term(tokens: &mut Tokens) -> i32 {
+fn term(tokens: &mut Tokens) -> f64 {
     let mut value = power(tokens);
 
     let mut token = tokens.peek();
@@ -91,7 +95,7 @@ fn term(tokens: &mut Tokens) -> i32 {
     value
 }
 
-fn power(tokens: &mut Tokens) -> i32 {
+fn power(tokens: &mut Tokens) -> f64 {
     let mut value = factor(tokens);
 
     let mut token = tokens.peek();
@@ -99,7 +103,7 @@ fn power(tokens: &mut Tokens) -> i32 {
         match token {
             Token::POW => {
                 tokens.eat();
-                value = value.pow(factor(tokens) as u32);
+                value = value.powf(factor(tokens));
             }
             _ => panic!("Expected ^, got {:?}", token),
         }
@@ -110,7 +114,7 @@ fn power(tokens: &mut Tokens) -> i32 {
     value
 }
 
-fn factor(tokens: &mut Tokens) -> i32 {
+fn factor(tokens: &mut Tokens) -> f64 {
     let token = tokens.peek();
     match token {
         Token::NUM(n) => {
@@ -142,7 +146,7 @@ fn factor(tokens: &mut Tokens) -> i32 {
             }
             let value = factor(tokens);
 
-            (value as f64).sqrt() as i32
+            (value).sqrt()
         }
         Token::ABS => {
             tokens.eat();
@@ -162,13 +166,19 @@ fn factor(tokens: &mut Tokens) -> i32 {
             }
             let value = factor(tokens);
 
-            (2..=value).product()
+            println!("{}", value);
+            println!("{}", (value as i32) as f64);
+            if is_float(value) {
+                panic!("Factorial for a decimal value is not supported");
+            }
+
+            (2..=value as i32).product::<i32>() as f64
         }
         _ => panic!("Did not expect {:?}", token),
     }
 }
 
-pub fn parse(tokens: Vec<Token>) -> i32 {
+pub fn parse(tokens: Vec<Token>) -> f64 {
     let mut token_list = Tokens::new(tokens);
     expr(&mut token_list)
 }
