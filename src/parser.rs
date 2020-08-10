@@ -166,8 +166,6 @@ fn factor(tokens: &mut Tokens) -> f64 {
             }
             let value = factor(tokens);
 
-            println!("{}", value);
-            println!("{}", (value as i32) as f64);
             if is_float(value) {
                 panic!("Factorial for a decimal value is not supported");
             }
